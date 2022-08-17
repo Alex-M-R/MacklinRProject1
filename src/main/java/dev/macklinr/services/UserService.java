@@ -1,4 +1,8 @@
 package dev.macklinr.services;
 
-public interface UserService {
+import dev.macklinr.entities.User;
+
+public interface UserService
+{
+    User registerUser(User user);
 }
