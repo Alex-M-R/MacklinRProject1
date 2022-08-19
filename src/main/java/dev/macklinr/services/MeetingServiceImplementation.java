@@ -4,6 +4,7 @@ import dev.macklinr.daos.MeetingDAO;
 import dev.macklinr.entities.Meeting;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MeetingServiceImplementation implements MeetingService
 {
@@ -17,6 +18,13 @@ public class MeetingServiceImplementation implements MeetingService
         return this.meetingDAO.createMeeting(meeting);
     }
 
+    @Override
+    public Meeting getMeetingByID(int id)
+    {
+        return this.meetingDAO.getMeetingByID(id);
+    }
+
+    // Ignore any dummy meetings in list
     @Override
     public List<Meeting> getAllMeetings() {return this.meetingDAO.getAllMeetings();}
 }

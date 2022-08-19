@@ -6,20 +6,20 @@ public class Meeting
 {
     int id;
     String address;
-    int scheduledDate;
+    long scheduledDate;
     String summary;
 
     public Meeting() {
     }
 
-    public Meeting(int id, String address, int scheduledDate, String summary) {
+    public Meeting(int id, String address, long scheduledDate, String summary) {
         this.id = id;
         this.address = address;
         this.scheduledDate = scheduledDate;
         this.summary = summary;
     }
 
-    public Meeting(String address, int scheduledDate, String summary) {
+    public Meeting(String address, long scheduledDate, String summary) {
         this.address = address;
         this.scheduledDate = scheduledDate;
         this.summary = summary;
@@ -41,11 +41,11 @@ public class Meeting
         this.address = address;
     }
 
-    public int getScheduledDate() {
+    public long getScheduledDate() {
         return scheduledDate;
     }
 
-    public void setScheduledDate(int scheduledDate) {
+    public void setScheduledDate(long scheduledDate) {
         this.scheduledDate = scheduledDate;
     }
 

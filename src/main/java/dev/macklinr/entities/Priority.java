@@ -2,7 +2,7 @@ package dev.macklinr.entities;
 
 public enum Priority
 {
-    PENDING,
+    UNREVIEWED,
     HIGH,
     LOW,
     RESOLVED,

@@ -8,5 +8,6 @@ public interface MeetingService
 {
     Meeting registerMeeting(Meeting meeting);
 
+    Meeting getMeetingByID(int id);
     List<Meeting> getAllMeetings();
 }

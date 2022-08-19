@@ -6,8 +6,10 @@ import dev.macklinr.daos.MeetingDaoDB;
 import dev.macklinr.daos.UserDaoDB;
 import dev.macklinr.entities.Complaint;
 import dev.macklinr.entities.Meeting;
+import dev.macklinr.entities.Priority;
 import dev.macklinr.entities.User;
 import dev.macklinr.services.*;
+import dev.macklinr.utils.InputValidation;
 import io.javalin.Javalin;
 import io.javalin.http.Handler;
 
@@ -81,12 +83,66 @@ public class App
             ctx.result(ToJson(result));
         };
 
+        // Update Complaint Status Handler
+        Handler patchComplaintStatus = ctx ->
+        {
+            int id = InputValidation.ValidatePositiveInt(ctx.pathParam("id"));
+
+            if (id > 0)
+            {
+                Complaint existing = complaintService.getComplaintByID(id);
+
+                if (existing == null)
+                {
+                    // we have a problem
+                    return;
+                }
+
+                String newStatus = ctx.pathParam("status");
+                newStatus.toLowerCase();
+
+               switch(newStatus)
+               {
+                   case "resolved":
+                       existing = complaintService.updateComplaintStatus(id, Priority.RESOLVED);
+                       break;
+                   case "high":
+                       existing = complaintService.updateComplaintStatus(id, Priority.HIGH);
+                       break;
+                   case "low":
+                       existing = complaintService.updateComplaintStatus(id, Priority.LOW);
+                       break;
+                   case "ignored":
+                       existing = complaintService.updateComplaintStatus(id, Priority.IGNORED);
+                       break;
+                   default:
+                       ctx.status(400);
+                       ctx.result("Something went wrong");
+                       return;
+               }
+               ctx.result(ToJson(existing));
+
+            }
+            else
+                ctx.status(400);
+        };
+
+
 
         // meeting Handlers
-        Handler createMeetingHandler = ctx -> ctx.result(ToJson(meetingService.registerMeeting(FromJson(ctx.body(),Meeting.class))));
+        Handler createMeetingHandler = ctx ->
+        {
+            ctx.status(201);
+            ctx.result(ToJson(meetingService.registerMeeting(FromJson(ctx.body(),Meeting.class))));
+        };
 
         Handler getMeetingsHandler = ctx -> ctx.result(ToJson(meetingService.getAllMeetings()));
 
+        Handler getMeetingByIDHandler = ctx ->
+        {
+            int id = InputValidation.ValidatePositiveInt(ctx.pathParam("id"));
+                ctx.result(ToJson(meetingService.getMeetingByID(id)));
+        };
 
 
 
@@ -105,11 +161,13 @@ public class App
 
         // complaint routes
         app.post("/complaints", createComplaintHandler);
-        app.get("/complaints", getAllComplaintsHandler);
+        app.get("/complaints", getAllComplaintsHandler);    // also does get all complaints with specific meeting ID
+        app.patch("/complaints/{id}/{status}", patchComplaintStatus);
 
         // meeting routes
         app.post("/meetings", createMeetingHandler);
         app.get("/meetings", getMeetingsHandler);
+        app.get("/meetings/{id}", getMeetingByIDHandler);
 
         // app_user routes
 

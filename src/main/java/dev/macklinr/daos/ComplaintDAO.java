@@ -9,4 +9,7 @@ public interface ComplaintDAO
     Complaint createComplaint(Complaint complaint);
 
     List<Complaint> getAllComplaints();
+
+    Complaint getComplaintByID(int id);
+    Complaint updateComplaint(Complaint complaint);
 }
