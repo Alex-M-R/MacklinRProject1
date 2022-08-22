@@ -1,7 +1,6 @@
 package dev.macklinr.daotests;
 
-import dev.macklinr.daos.UserDAO;
-import dev.macklinr.daos.UserDaoDB;
+import dev.macklinr.daos.*;
 import dev.macklinr.entities.Role;
 import dev.macklinr.entities.User;
 import dev.macklinr.utils.ConnectionUtil;
