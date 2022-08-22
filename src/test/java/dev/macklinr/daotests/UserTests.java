@@ -2,11 +2,10 @@ package dev.macklinr.daotests;
 
 import dev.macklinr.daos.UserDAO;
 import dev.macklinr.daos.UserDaoDB;
+import dev.macklinr.entities.Role;
+import dev.macklinr.entities.User;
 import dev.macklinr.utils.ConnectionUtil;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -23,7 +22,13 @@ public class UserTests
     {
         try(Connection conn = ConnectionUtil.createConnection())
         {
-            String sql = "<pending ERD approval>";
+            String sql = "create table " + userTable + "\n" +
+                    "(\n" +
+                    "id serial primary key,\n" +
+                    "username varchar(40),\n" +
+                    "password varchar(40),\n" +
+                    "role varchar(40) check (role in ('CONSTITUENT', 'COUNCIL'))\n" +
+                    ");";
 
             Statement statement = conn.createStatement();
             statement.execute(sql);
@@ -34,7 +39,23 @@ public class UserTests
         }
     }
 
+    @Test
+    @Order(1)
+    void create_user_test()
+    {
+        User user = userDAO.createUser(new User(0,"testUser","password" ,Role.COUNCIL));
+    }
+
+
     // Test cases pending ERD approval
+    @Test
+    @Order(2)
+    void get_user_by_username_test()
+    {
+        User user = userDAO.getUserByUserName("testUser");
+        Assertions.assertEquals("testUser", user.getUsername());
+    }
+
 
 
 

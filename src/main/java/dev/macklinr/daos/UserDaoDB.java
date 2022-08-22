@@ -1,5 +1,6 @@
 package dev.macklinr.daos;
 
+import dev.macklinr.entities.Role;
 import dev.macklinr.entities.User;
 import dev.macklinr.utils.ConnectionUtil;
 
@@ -38,6 +39,37 @@ public class UserDaoDB implements UserDAO
             int generatedKey = rs.getInt("id");
 
             user.setId(generatedKey);
+            return user;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public User getUserByUserName(String username)
+    {
+        try(Connection conn = ConnectionUtil.createConnection())
+        {
+            // insert into app_user values (-1, 'UNREGISTERED_USER', 'password', 'CONSTITUENT');
+            String sql = "select * from " + this.tableName + " where username = ?";
+
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+            preparedStatement.setString(1, username);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            rs.next();
+
+            User user = new User();
+
+            user.setId(rs.getInt("id"));
+            user.setUsername(rs.getString("username"));
+            user.setPassword(rs.getString("password"));
+            user.setRole(Role.valueOf(rs.getString("role")));
+
             return user;
         }
         catch (SQLException e)

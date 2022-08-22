@@ -43,4 +43,10 @@ public class ComplaintServiceImplementation implements ComplaintService
        existing.setStatus(newStatus);
        return this.complaintDAO.updateComplaint(existing);
     }
+
+    @Override
+    public Complaint updateComplaint(Complaint complaint)
+    {
+        return this.complaintDAO.updateComplaint(complaint);
+    }
 }

@@ -4,10 +4,13 @@ import com.google.gson.Gson;
 import dev.macklinr.daos.ComplaintDaoDB;
 import dev.macklinr.daos.MeetingDaoDB;
 import dev.macklinr.daos.UserDaoDB;
+import dev.macklinr.dtos.LoginCredentials;
 import dev.macklinr.entities.Complaint;
 import dev.macklinr.entities.Meeting;
 import dev.macklinr.entities.Priority;
 import dev.macklinr.entities.User;
+import dev.macklinr.exceptions.NoUserFoundException;
+import dev.macklinr.exceptions.PasswordMismatchException;
 import dev.macklinr.services.*;
 import dev.macklinr.utils.InputValidation;
 import io.javalin.Javalin;
@@ -25,6 +28,8 @@ public class App
     public static final UserService userService = new UserServiceImplementation(new UserDaoDB(userTable));
     public static final ComplaintService complaintService = new ComplaintServiceImplementation(new ComplaintDaoDB(complaintTable));
     public static final MeetingService meetingService = new MeetingServiceImplementation(new MeetingDaoDB(meetingTable));
+
+    public static final LoginService loginService = new LoginServiceImplementation(new UserDaoDB()); // shouldn't conflict with user service
 
     /*
     ctx.status(int);
@@ -86,7 +91,7 @@ public class App
         // Update Complaint Status Handler
         Handler patchComplaintStatus = ctx ->
         {
-            int id = InputValidation.ValidatePositiveInt(ctx.pathParam("id"));
+            int id = InputValidation.validatePositiveInt(ctx.pathParam("id"));
 
             if (id > 0)
             {
@@ -127,6 +132,29 @@ public class App
                 ctx.status(400);
         };
 
+        // Update complaint meeting Handler
+        Handler patchComplaintMeeting = ctx ->
+        {
+            int id = InputValidation.validatePositiveInt(ctx.pathParam("id"));
+
+            if (id > 0)
+            {
+                // valid complaint
+                int meetingID = InputValidation.validatePositiveInt((ctx.pathParam("meetingID")));
+
+                if (meetingID > 0)
+                {
+                    Complaint existing = complaintService.getComplaintByID(id);
+
+                    existing.setMeetingID(meetingID);
+
+                    Complaint updated = complaintService.updateComplaint(existing);
+
+                    ctx.result(ToJson(updated));
+                }
+            }
+        };
+
 
 
         // meeting Handlers
@@ -140,7 +168,7 @@ public class App
 
         Handler getMeetingByIDHandler = ctx ->
         {
-            int id = InputValidation.ValidatePositiveInt(ctx.pathParam("id"));
+            int id = InputValidation.validatePositiveInt(ctx.pathParam("id"));
                 ctx.result(ToJson(meetingService.getMeetingByID(id)));
         };
 
@@ -157,12 +185,19 @@ public class App
             ctx.status(201);
             ctx.result(ToJson(registeredUser));
         };
+
+
+
+
+
+
         // setup routes
 
         // complaint routes
         app.post("/complaints", createComplaintHandler);
         app.get("/complaints", getAllComplaintsHandler);    // also does get all complaints with specific meeting ID
         app.patch("/complaints/{id}/{status}", patchComplaintStatus);
+        app.put("/complaints/{id}/{meetingID}", patchComplaintMeeting);
 
         // meeting routes
         app.post("/meetings", createMeetingHandler);
@@ -170,6 +205,39 @@ public class App
         app.get("/meetings/{id}", getMeetingByIDHandler);
 
         // app_user routes
+
+
+
+
+
+
+
+
+        // Login is NOT a RESTful endpoint
+        app.post("/login", ctx ->
+        {
+            LoginCredentials credentials = FromJson(ctx.body(),LoginCredentials.class);
+
+            User user = loginService.validateUser(credentials.getUsername(), credentials.getPassword());
+
+            ctx.result(ToJson(user));
+
+        });
+
+
+        // when the exception PasswordMismatchException is thrown and is never caught
+        // it will be passed to this function along with the ctx from that http request
+       app.exception(PasswordMismatchException.class, (exception, ctx) ->
+       {
+           ctx.status(400);
+           ctx.result("password did not match");
+       });
+
+       app.exception(NoUserFoundException.class, (exception, ctx) ->
+       {
+           ctx.status(404);
+           ctx.result("Employee not found ");
+       });
 
         app.start();
     }

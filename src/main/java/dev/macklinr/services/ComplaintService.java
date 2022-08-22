@@ -15,4 +15,6 @@ public interface ComplaintService
 
     Complaint getComplaintByID(int id);
     Complaint updateComplaintStatus(int id, Priority newStatus);
+
+    Complaint updateComplaint(Complaint complaint);
 }

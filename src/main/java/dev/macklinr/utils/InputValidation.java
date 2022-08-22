@@ -2,7 +2,7 @@ package dev.macklinr.utils;
 
 public class InputValidation
 {
-    public static int ValidatePositiveInt(String s)
+    public static int validatePositiveInt(String s)
     {
         int id = -1;
 
