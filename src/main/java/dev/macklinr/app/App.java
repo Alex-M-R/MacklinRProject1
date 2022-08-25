@@ -5,16 +5,15 @@ import dev.macklinr.daos.ComplaintDaoDB;
 import dev.macklinr.daos.MeetingDaoDB;
 import dev.macklinr.daos.UserDaoDB;
 import dev.macklinr.dtos.LoginCredentials;
-import dev.macklinr.entities.Complaint;
-import dev.macklinr.entities.Meeting;
-import dev.macklinr.entities.Priority;
-import dev.macklinr.entities.User;
+import dev.macklinr.entities.*;
+import dev.macklinr.exceptions.IllegalRoleException;
 import dev.macklinr.exceptions.NoUserFoundException;
 import dev.macklinr.exceptions.PasswordMismatchException;
 import dev.macklinr.services.*;
 import dev.macklinr.utils.InputValidation;
 import io.javalin.Javalin;
 import io.javalin.http.Handler;
+import jdk.swing.interop.SwingInterOpUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -104,7 +103,7 @@ public class App
                 }
 
                 String newStatus = ctx.pathParam("status");
-                newStatus.toLowerCase();
+                newStatus = newStatus.toLowerCase();
 
                switch(newStatus)
                {
@@ -180,13 +179,47 @@ public class App
         Handler createUserHandler = ctx ->
         {
             User user = FromJson(ctx.body(), User.class);
+            System.out.println(user.getRole());
             User registeredUser = userService.registerUser(user);
 
+            System.out.println(registeredUser);
             ctx.status(201);
             ctx.result(ToJson(registeredUser));
         };
 
+        Handler getAllUsersHandler = ctx ->
+        {
+            List<User> result = userService.getAllUsers();
 
+            String param = ctx.queryParam("role");
+
+            if (param != null)
+            {
+                param = param.toUpperCase();
+                try
+                {
+
+                    Role filter = Role.valueOf(param);
+
+                    result = result.stream().filter(user -> user.getRole() == filter).collect(Collectors.toList());
+                }
+                catch (IllegalArgumentException e)
+                {
+                    // bad param. Just ignore
+                    e.printStackTrace();
+                }
+            }
+            ctx.result(ToJson(result));
+        };
+
+        Handler patchUser = ctx ->
+        {
+            int id = InputValidation.validatePositiveInt(ctx.pathParam("id"));
+
+            Role newRole = InputValidation.validateRole(ctx.pathParam("role"));
+
+            userService.setUserRole(id, newRole);
+        };
 
 
 
@@ -205,9 +238,9 @@ public class App
         app.get("/meetings/{id}", getMeetingByIDHandler);
 
         // app_user routes
-
-
-
+        app.post("/users", createUserHandler);
+        app.get("/users", getAllUsersHandler);
+        app.patch("/users/{id}/{role}",patchUser);
 
 
 
@@ -237,6 +270,12 @@ public class App
        {
            ctx.status(404);
            ctx.result("Employee not found ");
+       });
+
+       app.exception(IllegalRoleException.class, (exception, ctx) ->
+       {
+          ctx.status(400);
+          ctx.result(exception.getMessage());
        });
 
         app.start();

@@ -1,10 +1,13 @@
 package dev.macklinr.daos;
 
+import dev.macklinr.entities.Meeting;
 import dev.macklinr.entities.Role;
 import dev.macklinr.entities.User;
 import dev.macklinr.utils.ConnectionUtil;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDaoDB implements UserDAO
 {
@@ -76,6 +79,61 @@ public class UserDaoDB implements UserDAO
         {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        try(Connection conn = ConnectionUtil.createConnection())
+        {
+            String sql = "select * from " + this.tableName;
+
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            List<User> userList = new ArrayList();
+            while(rs.next())
+            {
+                User user = new User();
+
+                user.setId(rs.getInt("id"));
+                user.setUsername(rs.getString("username"));
+                user.setPassword("null");
+                user.setRole(Role.valueOf(rs.getString("role")));
+
+                userList.add(user);
+            }
+
+            return userList;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public boolean setRole(int id, Role newRole)
+    {
+        try(Connection conn = ConnectionUtil.createConnection())
+        {
+            String sql = "update " + this.tableName + " set role = ? where id= ?";
+
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+            preparedStatement.setString(1, newRole.name());
+            preparedStatement.setInt(2, id);
+
+            preparedStatement.executeUpdate();
+
+            return true;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
         }
     }
 }

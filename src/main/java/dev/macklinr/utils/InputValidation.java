@@ -1,5 +1,8 @@
 package dev.macklinr.utils;
 
+import dev.macklinr.entities.Role;
+import dev.macklinr.exceptions.IllegalRoleException;
+
 public class InputValidation
 {
     public static int validatePositiveInt(String s)
@@ -21,5 +24,19 @@ public class InputValidation
 
         return id;
     }
+
+    public static Role validateRole(String s)
+    {
+        try
+        {
+            Role role = Role.valueOf(s.toUpperCase());
+            return role;
+        }
+        catch (IllegalArgumentException e)
+        {
+            throw new IllegalRoleException(s + " is not a valid role.");
+        }
+    }
+
 
 }

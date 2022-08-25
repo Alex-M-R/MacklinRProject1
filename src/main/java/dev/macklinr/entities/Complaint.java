@@ -12,6 +12,13 @@ public class Complaint
     public Complaint() {
     }
 
+    public Complaint(int id, String description, Priority status, int meetingID) {
+        this.id = id;
+        this.description = description;
+        this.status = status;
+        this.meetingID = meetingID;
+    }
+
     public Complaint(String description, Priority status, int meetingID) {
         this.description = description;
         this.status = status;
