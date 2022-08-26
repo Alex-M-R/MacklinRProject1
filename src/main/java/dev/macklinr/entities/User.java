@@ -5,6 +5,10 @@ import java.util.Objects;
 public class User
 {
     int id;
+
+    String fName;
+
+    String lName;
     String username;
     String password;
     Role role;
@@ -12,14 +16,18 @@ public class User
     public User() {
     }
 
-    public User(int id, String username, String password, Role role) {
+    public User(int id, String fName, String lName, String username, String password, Role role) {
         this.id = id;
+        this.fName = fName;
+        this.lName = lName;
         this.username = username;
         this.password = password;
         this.role = role;
     }
 
-    public User(String username, String password, Role role) {
+    public User(String fName, String lName, String username, String password, Role role) {
+        this.fName = fName;
+        this.lName = lName;
         this.username = username;
         this.password = password;
         this.role = role;
@@ -31,6 +39,22 @@ public class User
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getfName() {
+        return fName;
+    }
+
+    public void setfName(String fName) {
+        this.fName = fName;
+    }
+
+    public String getlName() {
+        return lName;
+    }
+
+    public void setlName(String lName) {
+        this.lName = lName;
     }
 
     public String getUsername() {
@@ -62,20 +86,22 @@ public class User
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && Objects.equals(username, user.username) && Objects.equals(password, user.password) && role == user.role;
+        return id == user.id && Objects.equals(fName, user.fName) && Objects.equals(lName, user.lName) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && role == user.role;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, role);
+        return Objects.hash(id, fName, lName, username, password, role);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", fName='" + fName + '\'' +
+                ", lName='" + lName + '\'' +
                 ", username='" + username + '\'' +
-                // ", password='" + password + '\'' + // ... maybe DON'T display someone's password. Even if we're salting or w/e it's called
+                ", password='" + password + '\'' +
                 ", role=" + role +
                 '}';
     }

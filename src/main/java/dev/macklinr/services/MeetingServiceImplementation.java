@@ -2,6 +2,7 @@ package dev.macklinr.services;
 
 import dev.macklinr.daos.MeetingDAO;
 import dev.macklinr.entities.Meeting;
+import dev.macklinr.entities.User;
 
 import java.util.List;
 import java.util.stream.Collectors;

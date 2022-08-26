@@ -1,6 +1,8 @@
 package dev.macklinr.utils;
 
+import dev.macklinr.entities.RequestState;
 import dev.macklinr.entities.Role;
+import dev.macklinr.exceptions.IllegalRequestStateException;
 import dev.macklinr.exceptions.IllegalRoleException;
 
 public class InputValidation
@@ -37,6 +39,20 @@ public class InputValidation
             throw new IllegalRoleException(s + " is not a valid role.");
         }
     }
+
+    public static RequestState validateState(String s)
+    {
+        try
+        {
+            RequestState state = RequestState.valueOf(s.toUpperCase());
+            return state;
+        }
+        catch (IllegalArgumentException e)
+        {
+            throw new IllegalRequestStateException(s + " is not a valid role.");
+        }
+    }
+
 
 
 }

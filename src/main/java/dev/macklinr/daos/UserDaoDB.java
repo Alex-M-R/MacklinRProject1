@@ -27,12 +27,14 @@ public class UserDaoDB implements UserDAO
         try(Connection conn = ConnectionUtil.createConnection())
         {
             // insert into app_user values (-1, 'UNREGISTERED_USER', 'password', 'CONSTITUENT');
-            String sql = "insert into " + this.tableName + " values (default, ?, ?, ?);";
+            String sql = "insert into " + this.tableName + " values (default, ?, ?, ?, ?, ?);";
 
             PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setString(3,user.getRole().name());
+            preparedStatement.setString(1, user.getfName());
+            preparedStatement.setString(2, user.getlName());
+            preparedStatement.setString(3,user.getUsername());
+            preparedStatement.setString(4,user.getPassword());
+            preparedStatement.setString(5, user.getRole().name());
 
             preparedStatement.execute();
 
@@ -69,6 +71,8 @@ public class UserDaoDB implements UserDAO
             User user = new User();
 
             user.setId(rs.getInt("id"));
+            user.setfName(rs.getString("fname"));
+            user.setlName(rs.getString("lname"));
             user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
             user.setRole(Role.valueOf(rs.getString("role")));
@@ -98,6 +102,8 @@ public class UserDaoDB implements UserDAO
                 User user = new User();
 
                 user.setId(rs.getInt("id"));
+                user.setfName(rs.getString("fname"));
+                user.setlName(rs.getString("lname"));
                 user.setUsername(rs.getString("username"));
                 user.setPassword("null");
                 user.setRole(Role.valueOf(rs.getString("role")));

@@ -42,7 +42,8 @@ public class UserTests
     @Order(1)
     void create_user_test()
     {
-        User user = userDAO.createUser(new User(0,"testUser","password" ,Role.COUNCIL));
+        User user = userDAO.createUser(new User(0, "Test","Err","testUser","password" ,Role.COUNCIL));
+
     }
 
 

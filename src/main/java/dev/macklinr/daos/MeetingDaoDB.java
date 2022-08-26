@@ -1,6 +1,8 @@
 package dev.macklinr.daos;
 
 import dev.macklinr.entities.Meeting;
+import dev.macklinr.entities.Role;
+import dev.macklinr.entities.User;
 import dev.macklinr.utils.ConnectionUtil;
 
 import java.sql.*;

@@ -3,9 +3,11 @@ package dev.macklinr.app;
 import com.google.gson.Gson;
 import dev.macklinr.daos.ComplaintDaoDB;
 import dev.macklinr.daos.MeetingDaoDB;
+import dev.macklinr.daos.SpeakerDaoDB;
 import dev.macklinr.daos.UserDaoDB;
 import dev.macklinr.dtos.LoginCredentials;
 import dev.macklinr.entities.*;
+import dev.macklinr.exceptions.IllegalRequestStateException;
 import dev.macklinr.exceptions.IllegalRoleException;
 import dev.macklinr.exceptions.NoUserFoundException;
 import dev.macklinr.exceptions.PasswordMismatchException;
@@ -13,7 +15,6 @@ import dev.macklinr.services.*;
 import dev.macklinr.utils.InputValidation;
 import io.javalin.Javalin;
 import io.javalin.http.Handler;
-import jdk.swing.interop.SwingInterOpUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,10 +25,12 @@ public class App
     private static final String complaintTable = "complaint";
     private static final String meetingTable = "meeting";
 
+    private static final String speakerTable = "speaker";
+
     public static final UserService userService = new UserServiceImplementation(new UserDaoDB(userTable));
     public static final ComplaintService complaintService = new ComplaintServiceImplementation(new ComplaintDaoDB(complaintTable));
     public static final MeetingService meetingService = new MeetingServiceImplementation(new MeetingDaoDB(meetingTable));
-
+    public static final SpeakerService speakerService = new SpeakerServiceImplementation(new SpeakerDaoDB(speakerTable, userTable, meetingTable));
     public static final LoginService loginService = new LoginServiceImplementation(new UserDaoDB()); // shouldn't conflict with user service
 
     /*
@@ -182,7 +185,7 @@ public class App
             System.out.println(user.getRole());
             User registeredUser = userService.registerUser(user);
 
-            System.out.println(registeredUser);
+            System.out.println("received user from Json in CreateUserHandler" +registeredUser);
             ctx.status(201);
             ctx.result(ToJson(registeredUser));
         };
@@ -221,6 +224,74 @@ public class App
             userService.setUserRole(id, newRole);
         };
 
+        // Speaker handlers
+        Handler createSpeakerHandler = ctx ->
+        {
+          int meetingID = InputValidation.validatePositiveInt(ctx.pathParam("meetingID"));
+          int userID = InputValidation.validatePositiveInt(ctx.pathParam("userID"));
+
+          if (speakerService.createSpeakerRelationship(meetingID,userID))
+              ctx.status(201);
+        };
+
+        Handler getALlSpeakersHandler = ctx ->
+        {
+            List<Speaker> speakers = speakerService.getAllSpeakers();
+
+            String param = ctx.queryParam("status");
+
+            if (param != null) {
+                param = param.toUpperCase();
+                try {
+                    RequestState filter = RequestState.valueOf(param);
+
+                    speakers = speakers.stream().filter(speaker -> speaker.getState() == filter).collect(Collectors.toList());
+                } catch (IllegalArgumentException e) {
+                    // bad param. Just ignore
+                    e.printStackTrace();
+                }
+            }
+            ctx.result(ToJson(speakers));
+        };
+
+        Handler getMeetingSpeakersHandler = ctx ->
+        {
+            // add query param to filter on the request status
+            int id = InputValidation.validatePositiveInt(ctx.pathParam("meetingID"));
+
+            // call meeting service to do a join and return users
+            List<Speaker> speakers = speakerService.getSpeakersForMeeting(id);
+
+            String param = ctx.queryParam("status");
+
+            if (param != null)
+            {
+                System.out.println(param);
+                param = param.toUpperCase();
+                try
+                {
+                    RequestState filter = RequestState.valueOf(param);
+
+                    speakers = speakers.stream().filter(speaker -> speaker.getState() == filter).collect(Collectors.toList());
+                }
+                catch (IllegalArgumentException e)
+                {
+                    // bad param. Just ignore
+                    e.printStackTrace();
+                }
+            }
+            ctx.result(ToJson(speakers));
+        };
+
+        Handler updateSpeakerStatusHandler = ctx ->
+        {
+            int id = InputValidation.validatePositiveInt(ctx.pathParam("id"));
+
+            RequestState newState = InputValidation.validateState(ctx.pathParam("state"));
+
+            speakerService.updateSpeakerState(id, newState);
+        };
+
 
 
 
@@ -242,7 +313,12 @@ public class App
         app.get("/users", getAllUsersHandler);
         app.patch("/users/{id}/{role}",patchUser);
 
-
+        //speaker routes
+        app.post("/speakers/{meetingID}/{userID}", createSpeakerHandler);
+        app.get("/speakers/{meetingID}", getMeetingSpeakersHandler);
+        app.get("/speakers", getALlSpeakersHandler);
+        app.patch("/speakers/{id}/{state}", updateSpeakerStatusHandler);
+        // need a patch speaker request
 
 
 
@@ -273,6 +349,12 @@ public class App
        });
 
        app.exception(IllegalRoleException.class, (exception, ctx) ->
+       {
+          ctx.status(400);
+          ctx.result(exception.getMessage());
+       });
+
+       app.exception(IllegalRequestStateException.class, (exception, ctx) ->
        {
           ctx.status(400);
           ctx.result(exception.getMessage());
