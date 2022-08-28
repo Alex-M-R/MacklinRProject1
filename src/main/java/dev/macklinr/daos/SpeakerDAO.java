@@ -1,9 +1,9 @@
 package dev.macklinr.daos;
 
-import dev.macklinr.entities.Meeting;
+
 import dev.macklinr.entities.RequestState;
 import dev.macklinr.entities.Speaker;
-import dev.macklinr.entities.User;
+
 
 import java.util.List;
 

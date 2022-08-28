@@ -87,7 +87,7 @@ public class MeetingDaoDB implements MeetingDAO
 
             ResultSet rs = preparedStatement.executeQuery();
 
-            List<Meeting> meetingsList = new ArrayList();
+            List<Meeting> meetingsList = new ArrayList<Meeting>();
             while(rs.next())
             {
                 Meeting meeting = new Meeting();
@@ -104,7 +104,7 @@ public class MeetingDaoDB implements MeetingDAO
         catch (SQLException e)
         {
             e.printStackTrace();
-            return null;
+            return new ArrayList<Meeting>();
         }
     }
 }

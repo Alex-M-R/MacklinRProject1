@@ -21,27 +21,17 @@ import java.util.stream.Collectors;
 
 public class App
 {
-    private static final String userTable = "app_user";
-    private static final String complaintTable = "complaint";
-    private static final String meetingTable = "meeting";
+    private static final String USER_TABLE = "app_user";
+    private static final String COMPLAINT_TABLE = "complaint";
+    private static final String MEETING_TABLE = "meeting";
 
-    private static final String speakerTable = "speaker";
+    private static final String SPEAKER_TABLE = "speaker";
 
-    public static final UserService userService = new UserServiceImplementation(new UserDaoDB(userTable));
-    public static final ComplaintService complaintService = new ComplaintServiceImplementation(new ComplaintDaoDB(complaintTable));
-    public static final MeetingService meetingService = new MeetingServiceImplementation(new MeetingDaoDB(meetingTable));
-    public static final SpeakerService speakerService = new SpeakerServiceImplementation(new SpeakerDaoDB(speakerTable, userTable, meetingTable));
+    public static final UserService userService = new UserServiceImplementation(new UserDaoDB(USER_TABLE));
+    public static final ComplaintService complaintService = new ComplaintServiceImplementation(new ComplaintDaoDB(COMPLAINT_TABLE));
+    public static final MeetingService meetingService = new MeetingServiceImplementation(new MeetingDaoDB(MEETING_TABLE));
+    public static final SpeakerService speakerService = new SpeakerServiceImplementation(new SpeakerDaoDB(SPEAKER_TABLE, USER_TABLE, MEETING_TABLE));
     public static final LoginService loginService = new LoginServiceImplementation(new UserDaoDB()); // shouldn't conflict with user service
-
-    /*
-    ctx.status(int);
-    relevant codes to remember, and probably use this time around:
-    - 200 'OK'              - sent by default with response assuming no errors or manual change.
-    - 201 'Created'         - only use when creating new entity
-    - 400 'Bad Request'     - bad input
-    - 401 'Unauthorized'    - trying to do something without having correct user access (but tbh shouldn't be able to on front end anyway?)
-    - 404 'Not Found'       - Duh
-     */
 
     public static void main(String[] args)
     {

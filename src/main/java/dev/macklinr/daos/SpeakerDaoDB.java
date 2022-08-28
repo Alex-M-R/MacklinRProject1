@@ -55,7 +55,7 @@ public class SpeakerDaoDB implements SpeakerDAO
 
             ResultSet rs = preparedStatement.executeQuery();
 
-            List<Speaker> speakersList = new ArrayList();
+            List<Speaker> speakersList = new ArrayList<Speaker>();
             while(rs.next())
             {
                 Speaker speaker = new Speaker();
@@ -78,7 +78,7 @@ public class SpeakerDaoDB implements SpeakerDAO
         catch (SQLException e)
         {
             e.printStackTrace();
-            return null;
+            return new ArrayList<Speaker>();
         }
     }
 

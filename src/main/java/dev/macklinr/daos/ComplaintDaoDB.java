@@ -56,7 +56,7 @@ public class ComplaintDaoDB implements ComplaintDAO
 
             ResultSet rs = preparedStatement.executeQuery();
 
-            List<Complaint> complaintsList = new ArrayList();
+            List<Complaint> complaintsList = new ArrayList<Complaint>();
             while(rs.next())
             {
                 Complaint complaint = new Complaint();
@@ -74,7 +74,7 @@ public class ComplaintDaoDB implements ComplaintDAO
         catch (SQLException e)
         {
             e.printStackTrace();
-            return null;
+            return new ArrayList<Complaint>();
         }
     }
 

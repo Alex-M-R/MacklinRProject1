@@ -23,7 +23,6 @@ public class SpeakerServiceImplementation implements SpeakerService
     @Override
     public List<Speaker> getSpeakersForMeeting(int id) {
         return this.speakerDAO.getAllSpeakers().stream().filter(speaker -> speaker.getMeetingID() == id).collect(Collectors.toList());
-        //return this.speakerDAO.getAllSpeakersByMeetingId(id);
     }
 
     @Override

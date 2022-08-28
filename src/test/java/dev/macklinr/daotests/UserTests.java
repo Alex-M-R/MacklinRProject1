@@ -46,7 +46,7 @@ class UserTests
     {
         User user = userDAO.createUser(new User(0, "Test","Err","testUser","password" ,Role.COUNCIL));
 
-       // Assertions.assertEquals(1, user.getId());
+        Assertions.assertEquals(1, user.getId());
     }
 
 

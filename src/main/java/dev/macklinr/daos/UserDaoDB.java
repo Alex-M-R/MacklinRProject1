@@ -93,7 +93,7 @@ public class UserDaoDB implements UserDAO
 
             ResultSet rs = preparedStatement.executeQuery();
 
-            List<User> userList = new ArrayList();
+            List<User> userList = new ArrayList<User>();
             while(rs.next())
             {
                 User user = new User();
@@ -113,7 +113,7 @@ public class UserDaoDB implements UserDAO
         catch (SQLException e)
         {
             e.printStackTrace();
-            return null;
+            return new ArrayList<User>();
         }
     }
 
