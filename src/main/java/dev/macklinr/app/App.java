@@ -96,26 +96,26 @@ public class App
                 String newStatus = ctx.pathParam("status");
                 newStatus = newStatus.toLowerCase();
 
-               switch(newStatus)
-               {
-                   case "resolved":
-                       existing = complaintService.updateComplaintStatus(id, Priority.RESOLVED);
-                       break;
-                   case "high":
-                       existing = complaintService.updateComplaintStatus(id, Priority.HIGH);
-                       break;
-                   case "low":
-                       existing = complaintService.updateComplaintStatus(id, Priority.LOW);
-                       break;
-                   case "ignored":
-                       existing = complaintService.updateComplaintStatus(id, Priority.IGNORED);
-                       break;
-                   default:
-                       ctx.status(400);
-                       ctx.result("Something went wrong");
-                       return;
-               }
-               ctx.result(toJson(existing));
+                switch(newStatus)
+                {
+                    case "resolved":
+                        existing = complaintService.updateComplaintStatus(id, Priority.RESOLVED);
+                        break;
+                    case "high":
+                        existing = complaintService.updateComplaintStatus(id, Priority.HIGH);
+                        break;
+                    case "low":
+                        existing = complaintService.updateComplaintStatus(id, Priority.LOW);
+                        break;
+                    case "ignored":
+                        existing = complaintService.updateComplaintStatus(id, Priority.IGNORED);
+                        break;
+                    default:
+                        ctx.status(400);
+                        ctx.result("Something went wrong");
+                        return;
+                }
+                ctx.result(toJson(existing));
 
             }
             else
@@ -159,7 +159,7 @@ public class App
         Handler getMeetingByIDHandler = ctx ->
         {
             int id = InputValidation.validatePositiveInt(ctx.pathParam("id"));
-                ctx.result(toJson(meetingService.getMeetingByID(id)));
+            ctx.result(toJson(meetingService.getMeetingByID(id)));
         };
 
 
@@ -214,11 +214,11 @@ public class App
         // Speaker handlers
         Handler createSpeakerHandler = ctx ->
         {
-          int meetingID = InputValidation.validatePositiveInt(ctx.pathParam("meetingID"));
-          int userID = InputValidation.validatePositiveInt(ctx.pathParam("userID"));
+            int meetingID = InputValidation.validatePositiveInt(ctx.pathParam("meetingID"));
+            int userID = InputValidation.validatePositiveInt(ctx.pathParam("userID"));
 
-          if (speakerService.createSpeakerRelationship(meetingID,userID))
-              ctx.status(201);
+            if (speakerService.createSpeakerRelationship(meetingID,userID))
+                ctx.status(201);
         };
 
         Handler getALlSpeakersHandler = ctx ->
@@ -322,29 +322,29 @@ public class App
 
         // when the exception PasswordMismatchException is thrown and is never caught
         // it will be passed to this function along with the ctx from that http request
-       app.exception(PasswordMismatchException.class, (exception, ctx) ->
-       {
-           ctx.status(400);
-           ctx.result("password did not match");
-       });
+        app.exception(PasswordMismatchException.class, (exception, ctx) ->
+        {
+            ctx.status(400);
+            ctx.result("password did not match");
+        });
 
-       app.exception(NoUserFoundException.class, (exception, ctx) ->
-       {
-           ctx.status(404);
-           ctx.result("Employee not found ");
-       });
+        app.exception(NoUserFoundException.class, (exception, ctx) ->
+        {
+            ctx.status(404);
+            ctx.result("Employee not found ");
+        });
 
-       app.exception(IllegalRoleException.class, (exception, ctx) ->
-       {
-          ctx.status(400);
-          ctx.result(exception.getMessage());
-       });
+        app.exception(IllegalRoleException.class, (exception, ctx) ->
+        {
+            ctx.status(400);
+            ctx.result(exception.getMessage());
+        });
 
-       app.exception(IllegalRequestStateException.class, (exception, ctx) ->
-       {
-          ctx.status(400);
-          ctx.result(exception.getMessage());
-       });
+        app.exception(IllegalRequestStateException.class, (exception, ctx) ->
+        {
+            ctx.status(400);
+            ctx.result(exception.getMessage());
+        });
 
         app.start();
     }
