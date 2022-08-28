@@ -6,6 +6,8 @@ import java.sql.SQLException;
 
 public class ConnectionUtil
 {
+    private ConnectionUtil(){}
+
     public static Connection createConnection()
     {
         try

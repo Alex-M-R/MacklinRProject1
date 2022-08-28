@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ComplaintServiceTests
+class ComplaintServiceTests
 {
     private final ComplaintService cService = new ComplaintServiceImplementation(Mockito.mock(ComplaintDAO.class));
 

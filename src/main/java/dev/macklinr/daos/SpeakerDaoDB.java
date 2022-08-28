@@ -24,7 +24,6 @@ public class SpeakerDaoDB implements SpeakerDAO
     public boolean createSpeakerRequest(int  meetingID, int userID) {
         try(Connection conn = ConnectionUtil.createConnection())
         {
-            // insert into speaker values (default, 1, 6, default);
             String sql = "insert into " + this.tableName + " values (default, ?, ?, default)";
             PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setInt(1, meetingID);
@@ -35,54 +34,12 @@ public class SpeakerDaoDB implements SpeakerDAO
             ResultSet rs = preparedStatement.getGeneratedKeys(); // returns the id that was created
             rs.next();   // have to move cursor to the first valid record
 
-            int generatedKey = rs.getInt("id");
             return true;
         }
         catch (SQLException e)
         {
             e.printStackTrace();
             return false;
-        }
-    }
-
-    @Override
-    public List<Speaker> getAllSpeakersByMeetingId(int id) {
-        try(Connection conn = ConnectionUtil.createConnection())
-        {
-            String sql = "select * from " + this.tableName +
-                    " inner join " + this.userTableName + " on speaker_id = " + this.userTableName + ".id" +
-                    " inner join " + this.meetingTableName + " on meeting_id = " + this.meetingTableName + ".id where meeting_id = ?;";
-
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-
-            preparedStatement.setInt(1, id);
-
-            ResultSet rs = preparedStatement.executeQuery();
-
-            List<Speaker> speakersList = new ArrayList();
-            while(rs.next())
-            {
-                Speaker speaker = new Speaker();
-
-                speaker.setId(rs.getInt("id"));
-                speaker.setMeetingID(rs.getInt("meeting_id"));
-                speaker.setAppUserID(rs.getInt("speaker_id"));
-                speaker.setState(RequestState.valueOf(rs.getString("status")));
-                speaker.setfName(rs.getString("fname"));
-                speaker.setlName(rs.getString("lname"));
-                speaker.setUserName(rs.getString("username"));
-                speaker.setAppUserRole(Role.valueOf(rs.getString("role")));
-                speaker.setMeetingSummary(rs.getString("summary"));
-
-                speakersList.add(speaker);
-            }
-
-            return speakersList;
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-            return null;
         }
     }
 

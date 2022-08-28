@@ -7,6 +7,8 @@ import dev.macklinr.exceptions.IllegalRoleException;
 
 public class InputValidation
 {
+    private InputValidation(){}
+
     public static int validatePositiveInt(String s)
     {
         int id = -1;
@@ -31,8 +33,7 @@ public class InputValidation
     {
         try
         {
-            Role role = Role.valueOf(s.toUpperCase());
-            return role;
+            return Role.valueOf(s.toUpperCase());
         }
         catch (IllegalArgumentException e)
         {
@@ -44,8 +45,7 @@ public class InputValidation
     {
         try
         {
-            RequestState state = RequestState.valueOf(s.toUpperCase());
-            return state;
+            return RequestState.valueOf(s.toUpperCase());
         }
         catch (IllegalArgumentException e)
         {

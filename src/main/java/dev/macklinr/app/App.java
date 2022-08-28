@@ -58,7 +58,7 @@ public class App
         Handler createComplaintHandler = ctx ->
         {
             ctx.status(201);
-            ctx.result(ToJson((complaintService.registerComplaint(FromJson(ctx.body(),Complaint.class)))));
+            ctx.result(toJson((complaintService.registerComplaint(fromJson(ctx.body(),Complaint.class)))));
         };
 
         Handler getAllComplaintsHandler = ctx ->    // also can get all complaints with specific meeting id if given a valid query param
@@ -78,8 +78,6 @@ public class App
                     // filter complaints on meetingID
                     result = result.stream().filter(complaint -> complaint.getMeetingID() == meetingID).collect(Collectors.toList());
 
-                    // keeping until test(s) shows above works fine
-                    //   result = complaintService.getAllComplaintsForMeeting(meetingID);
                 }
                 catch (IllegalArgumentException e)
                 {
@@ -87,7 +85,7 @@ public class App
                     e.printStackTrace();
                 }
             }
-            ctx.result(ToJson(result));
+            ctx.result(toJson(result));
         };
 
         // Update Complaint Status Handler
@@ -127,7 +125,7 @@ public class App
                        ctx.result("Something went wrong");
                        return;
                }
-               ctx.result(ToJson(existing));
+               ctx.result(toJson(existing));
 
             }
             else
@@ -152,7 +150,7 @@ public class App
 
                     Complaint updated = complaintService.updateComplaint(existing);
 
-                    ctx.result(ToJson(updated));
+                    ctx.result(toJson(updated));
                 }
             }
         };
@@ -163,15 +161,15 @@ public class App
         Handler createMeetingHandler = ctx ->
         {
             ctx.status(201);
-            ctx.result(ToJson(meetingService.registerMeeting(FromJson(ctx.body(),Meeting.class))));
+            ctx.result(toJson(meetingService.registerMeeting(fromJson(ctx.body(),Meeting.class))));
         };
 
-        Handler getMeetingsHandler = ctx -> ctx.result(ToJson(meetingService.getAllMeetings()));
+        Handler getMeetingsHandler = ctx -> ctx.result(toJson(meetingService.getAllMeetings()));
 
         Handler getMeetingByIDHandler = ctx ->
         {
             int id = InputValidation.validatePositiveInt(ctx.pathParam("id"));
-                ctx.result(ToJson(meetingService.getMeetingByID(id)));
+                ctx.result(toJson(meetingService.getMeetingByID(id)));
         };
 
 
@@ -181,13 +179,12 @@ public class App
 
         Handler createUserHandler = ctx ->
         {
-            User user = FromJson(ctx.body(), User.class);
-            System.out.println(user.getRole());
+            User user = fromJson(ctx.body(), User.class);
             User registeredUser = userService.registerUser(user);
 
-            System.out.println("received user from Json in CreateUserHandler" +registeredUser);
+
             ctx.status(201);
-            ctx.result(ToJson(registeredUser));
+            ctx.result(toJson(registeredUser));
         };
 
         Handler getAllUsersHandler = ctx ->
@@ -212,7 +209,7 @@ public class App
                     e.printStackTrace();
                 }
             }
-            ctx.result(ToJson(result));
+            ctx.result(toJson(result));
         };
 
         Handler patchUser = ctx ->
@@ -251,7 +248,7 @@ public class App
                     e.printStackTrace();
                 }
             }
-            ctx.result(ToJson(speakers));
+            ctx.result(toJson(speakers));
         };
 
         Handler getMeetingSpeakersHandler = ctx ->
@@ -266,7 +263,6 @@ public class App
 
             if (param != null)
             {
-                System.out.println(param);
                 param = param.toUpperCase();
                 try
                 {
@@ -280,7 +276,7 @@ public class App
                     e.printStackTrace();
                 }
             }
-            ctx.result(ToJson(speakers));
+            ctx.result(toJson(speakers));
         };
 
         Handler updateSpeakerStatusHandler = ctx ->
@@ -325,11 +321,11 @@ public class App
         // Login is NOT a RESTful endpoint
         app.post("/login", ctx ->
         {
-            LoginCredentials credentials = FromJson(ctx.body(),LoginCredentials.class);
+            LoginCredentials credentials = fromJson(ctx.body(),LoginCredentials.class);
 
             User user = loginService.validateUser(credentials.getUsername(), credentials.getPassword());
 
-            ctx.result(ToJson(user));
+            ctx.result(toJson(user));
 
         });
 
@@ -363,13 +359,13 @@ public class App
         app.start();
     }
 
-    static <T> T FromJson(String json, Class<T> type)
+    static <T> T fromJson(String json, Class<T> type)
     {
         Gson gson = new Gson();
         return gson.fromJson(json, type);
     }
 
-    static String ToJson(Object obj)
+    static String toJson(Object obj)
     {
         Gson gson = new Gson();
         return gson.toJson(obj);

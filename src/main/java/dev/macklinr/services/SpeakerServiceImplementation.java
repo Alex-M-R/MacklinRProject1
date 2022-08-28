@@ -5,6 +5,7 @@ import dev.macklinr.entities.RequestState;
 import dev.macklinr.entities.Speaker;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SpeakerServiceImplementation implements SpeakerService
 {
@@ -21,7 +22,8 @@ public class SpeakerServiceImplementation implements SpeakerService
 
     @Override
     public List<Speaker> getSpeakersForMeeting(int id) {
-        return this.speakerDAO.getAllSpeakersByMeetingId(id);
+        return this.speakerDAO.getAllSpeakers().stream().filter(speaker -> speaker.getMeetingID() == id).collect(Collectors.toList());
+        //return this.speakerDAO.getAllSpeakersByMeetingId(id);
     }
 
     @Override

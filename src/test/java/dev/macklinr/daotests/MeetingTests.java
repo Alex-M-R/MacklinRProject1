@@ -14,7 +14,7 @@ import java.sql.Statement;
 import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class MeetingTests
+class MeetingTests
 {
     private static final String meetingTable = "testMeeting";
 

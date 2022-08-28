@@ -1,7 +1,6 @@
 package dev.macklinr.daos;
 
 import dev.macklinr.entities.Complaint;
-import dev.macklinr.entities.Meeting;
 import dev.macklinr.entities.Priority;
 import dev.macklinr.utils.ConnectionUtil;
 

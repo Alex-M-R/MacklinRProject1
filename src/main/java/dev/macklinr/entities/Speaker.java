@@ -1,7 +1,5 @@
 package dev.macklinr.entities;
 
-import org.eclipse.jetty.server.Request;
-
 import java.util.Objects;
 
 public class Speaker

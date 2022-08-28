@@ -11,8 +11,6 @@ public interface SpeakerDAO
 {
     boolean createSpeakerRequest(int  meetingID, int userID);
 
-    List<Speaker> getAllSpeakersByMeetingId(int id);
-
     List<Speaker> getAllSpeakers();
 
     boolean updateSpeakerState(int id, RequestState state);

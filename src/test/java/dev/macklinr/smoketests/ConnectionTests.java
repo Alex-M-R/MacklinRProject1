@@ -8,7 +8,7 @@ import java.sql.Array;
 import java.sql.Connection;
 import java.util.*;
 
-public class ConnectionTests
+class ConnectionTests
 {
     @Test
     void connection_available()

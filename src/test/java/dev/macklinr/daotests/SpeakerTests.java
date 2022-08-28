@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SpeakerTests
+class SpeakerTests
 {
     UserDAO userDB = new UserDaoDB("usertest");
     MeetingDAO meetingDB = new MeetingDaoDB("meetingtest");
@@ -103,15 +103,6 @@ public class SpeakerTests
 
     @Test
     @Order(3)
-    void get_all_speakers_for_meeting_test()
-    {
-        List<Speaker> meeting2SpeakerList = speakerDB.getAllSpeakersByMeetingId(2);
-
-        Assertions.assertEquals(5, meeting2SpeakerList.size());
-    }
-
-    @Test
-    @Order(4)
     void update_speaker_request_state()
     {
         speakerDB.updateSpeakerState(1, RequestState.APPROVED);

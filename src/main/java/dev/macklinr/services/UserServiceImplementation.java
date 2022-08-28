@@ -1,7 +1,6 @@
 package dev.macklinr.services;
 
 import dev.macklinr.daos.UserDAO;
-import dev.macklinr.daos.UserDaoDB;
 import dev.macklinr.entities.Role;
 import dev.macklinr.entities.User;
 

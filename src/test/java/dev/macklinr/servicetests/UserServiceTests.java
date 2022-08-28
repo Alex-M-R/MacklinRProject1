@@ -7,7 +7,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.Mockito;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserServiceTests
+class UserServiceTests
 {
     private final UserDAO uDAO = Mockito.mock(UserDAO.class);
 }

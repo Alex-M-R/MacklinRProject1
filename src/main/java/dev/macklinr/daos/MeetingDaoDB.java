@@ -1,8 +1,6 @@
 package dev.macklinr.daos;
 
 import dev.macklinr.entities.Meeting;
-import dev.macklinr.entities.Role;
-import dev.macklinr.entities.User;
 import dev.macklinr.utils.ConnectionUtil;
 
 import java.sql.*;
@@ -26,7 +24,6 @@ public class MeetingDaoDB implements MeetingDAO
     {
         try(Connection conn = ConnectionUtil.createConnection())
         {
-            // insert into meeting values (-1, 'NO MEETING ASSIGNED', 0, 'NOT A REAL MEETING');
             String sql = "insert into " + this.tableName + " values (default, ?, ?, ?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, meeting.getAddress());

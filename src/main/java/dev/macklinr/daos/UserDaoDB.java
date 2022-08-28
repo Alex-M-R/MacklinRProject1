@@ -1,6 +1,5 @@
 package dev.macklinr.daos;
 
-import dev.macklinr.entities.Meeting;
 import dev.macklinr.entities.Role;
 import dev.macklinr.entities.User;
 import dev.macklinr.utils.ConnectionUtil;
@@ -26,7 +25,6 @@ public class UserDaoDB implements UserDAO
     {
         try(Connection conn = ConnectionUtil.createConnection())
         {
-            // insert into app_user values (-1, 'UNREGISTERED_USER', 'password', 'CONSTITUENT');
             String sql = "insert into " + this.tableName + " values (default, ?, ?, ?, ?, ?);";
 
             PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -58,7 +56,6 @@ public class UserDaoDB implements UserDAO
     {
         try(Connection conn = ConnectionUtil.createConnection())
         {
-            // insert into app_user values (-1, 'UNREGISTERED_USER', 'password', 'CONSTITUENT');
             String sql = "select * from " + this.tableName + " where username = ?";
 
             PreparedStatement preparedStatement = conn.prepareStatement(sql);

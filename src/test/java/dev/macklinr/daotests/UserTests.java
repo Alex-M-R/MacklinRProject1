@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserTests
+class UserTests
 {
     private static final String userTable = "testUser";
     UserDAO userDAO = new UserDaoDB(userTable);
@@ -24,6 +24,8 @@ public class UserTests
             String sql = "create table " + userTable + "\n" +
                     "(\n" +
                     "id serial primary key,\n" +
+                    "fname varchar(40),\n" +
+                    "lname varchar(40),\n" +
                     "username varchar(40),\n" +
                     "password varchar(40),\n" +
                     "role varchar(40) check (role in ('CONSTITUENT', 'COUNCIL'))\n" +
@@ -44,6 +46,7 @@ public class UserTests
     {
         User user = userDAO.createUser(new User(0, "Test","Err","testUser","password" ,Role.COUNCIL));
 
+       // Assertions.assertEquals(1, user.getId());
     }
 
 
